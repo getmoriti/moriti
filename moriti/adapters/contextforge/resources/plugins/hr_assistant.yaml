@@ -1,0 +1,24 @@
+# moriti external plugin server -- HR assistant deployment.
+#
+# Loaded by the plugin server (PLUGINS_CONFIG_PATH). One file per deployment:
+# the purpose below is bound here, at provisioning time, and the agent that
+# calls through the gateway cannot declare or change it.
+plugins:
+  - name: "moriti-hr-assistant"
+    kind: "moriti.adapters.contextforge.plugin.MoritiPrivacyPlugin"
+    description: "Purpose-bound privacy mediation of tool results (employee directory lookups)"
+    version: "0.1.0"
+    author: "moriti"
+    hooks: ["tool_post_invoke"]
+    tags: ["privacy", "purpose-limitation", "popia"]
+    mode: "transform"        # must be transform/sequential: observe-only modes discard rewrites
+    priority: 20             # lower = earlier; run before generic content filters
+    config:
+      agent: hr_assistant
+      purpose: employee_directory_lookup
+      policy: popia_hr_v1
+      principal_role: employee
+      destination: internal_model
+      retention: ephemeral
+      jurisdiction: ZA
+      legal_basis: legitimate_interest

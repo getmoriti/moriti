@@ -1,0 +1,17 @@
+# moriti proxy deployment: the HR assistant agent.
+#
+# Purpose is bound here, at provisioning time. The agent cannot declare or
+# change it. Directory lookups need contact details -- so under popia_hr_v1
+# that is ALL this agent can ever receive, whatever its tools return.
+agent: hr_assistant
+purpose: employee_directory_lookup
+policy: popia_hr_v1
+principal_role: employee
+destination: internal_model
+retention: ephemeral
+jurisdiction: ZA
+legal_basis: legitimate_interest
+allowed_tools: [get_employee, list_employees]
+downstream:
+  command: "{python}"      # the proxy's own interpreter; a real server uses a real command
+  args: [-m, moriti.mcp.demo_hr_server]

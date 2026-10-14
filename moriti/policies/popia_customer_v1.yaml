@@ -1,0 +1,68 @@
+name: popia_customer
+version: "1"
+description: >
+  POPIA-oriented policy for customer data. Exists to demonstrate the case where
+  access control and privacy part ways: a user with entirely legitimate CRM access, whose
+  request is nevertheless not permitted under this policy because the purpose is
+  incompatible with the consent on file and the destination is a third-party processor.
+  An example pack, not legal advice.
+
+default_decision: deny
+require_legal_basis: true
+
+purposes:
+  marketing_communication:
+    description: Contacting a customer about products, per marketing consent.
+    necessary_fields: [name, email, mobile_number]
+
+  fraud_investigation:
+    description: Investigating suspected fraud on an account.
+    necessary_fields: [name, mobile_number, account_number, national_id]
+    # Deliberately NOT compatible with marketing consent.
+
+  support_case_resolution:
+    description: Resolving an inbound customer support case.
+    necessary_fields: [name, email, account_number]
+    compatible_with: [service_communication]
+
+fields:
+  name:
+    sensitivity: normal
+  email:
+    sensitivity: normal
+  mobile_number:
+    sensitivity: high
+    tokenise_when_external: true
+  account_number:
+    sensitivity: high
+    tokenise_when_external: true
+  national_id:
+    sensitivity: high
+    never_external: true
+    no_persistence: true
+
+rules:
+  - id: crm-access-broad
+    match:
+      principal_role: [marketing_employee, support_agent_human]
+    field: [name, email, mobile_number, account_number]
+    decision: allow
+    reason: >-
+      the human principal holds CRM access to these fields -- this is the
+      permission a traditional IAM system would evaluate, and it passes
+
+  - id: support-agent-case-fields
+    match:
+      agent: customer_support_agent
+      purpose: support_case_resolution
+    field: [name, email, account_number]
+    decision: allow
+    reason: necessary to resolve the support case
+
+  - id: support-agent-national-id
+    match:
+      agent: customer_support_agent
+      purpose: support_case_resolution
+    field: national_id
+    decision: mask
+    reason: identity can be confirmed against a masked identifier

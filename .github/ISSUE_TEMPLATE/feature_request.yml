@@ -1,0 +1,29 @@
+name: Feature request
+description: Something the runtime should decide, enforce or integrate with.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What can you not express or enforce today? A concrete purpose, field and destination beats an abstract wish.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried instead
+  - type: dropdown
+    id: keeps
+    attributes:
+      label: Does this keep the rules?
+      description: Default deny, guards only restrict, fail closed, no protected values in logs, no telemetry, purpose bound at deployment.
+      options:
+        - Yes, all of them
+        - Not sure, let's discuss
+    validations:
+      required: true

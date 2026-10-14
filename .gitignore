@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+*.egg-info/
+.venv/
+venv/
+# never commit data or logs -- values must not enter history
+logs/
+*.log
+*.pkl
+.env

@@ -1,0 +1,72 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "moriti"
+version = "0.1.0"
+description = "Open-source runtime privacy layer for AI agents: purpose-aware decisions over what sensitive data an agent may receive, retain or transmit."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+authors = [{ name = "Titus Masike" }]
+keywords = ["privacy", "ai-agents", "mcp", "popia", "gdpr", "purpose-limitation", "data-minimisation"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+]
+dependencies = [
+  "pydantic>=2.7",
+  "PyYAML>=6.0",
+]
+
+[project.urls]
+Homepage = "https://www.moriti.dev"
+Documentation = "https://www.moriti.dev/docs"
+Repository = "https://github.com/getmoriti/moriti"
+Issues = "https://github.com/getmoriti/moriti/issues"
+Changelog = "https://github.com/getmoriti/moriti/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+# The proxy is written against the MCP Python SDK 2.x (constructor-registered
+# handlers); cpex requires 2.x as well.
+mcp = ["mcp>=2.0", "uvicorn>=0.30"]
+# Run moriti as an IBM ContextForge external plugin. cpex (and ContextForge
+# itself) require Python 3.12; the core runtime does not.
+contextforge = ["cpex>=0.1.3,<0.2"]
+# Run moriti as a Google ADK plugin.
+adk = ["google-adk>=2.0"]
+# Run moriti as Strands Agents hooks (the AgentCore interceptor needs no extra: plain JSON in and out).
+strands = ["strands-agents>=1.0"]
+# Run moriti as Microsoft Agent Framework function middleware.
+agentframework = ["agent-framework-core>=1.0"]
+# The mediation service: mediate() behind HTTP for gateways that can only call HTTP (APIM, Kong, ...).
+serve = ["starlette>=0.40", "uvicorn>=0.30"]
+dev = ["pytest>=8", "anyio>=4", "mcp>=2.0", "ruff>=0.6", "httpx>=0.27"]
+
+[project.scripts]
+moriti-proxy = "moriti.cli:proxy"
+moriti-serve = "moriti.cli:serve"
+
+[tool.pytest.ini_options]
+# No pythonpath entry on purpose: the suite tests whatever `moriti` is installed
+# (editable locally, the built wheel in CI), never the checkout by accident.
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+# E501: line length is a formatting concern, not a lint gate.
+# UP042: the (str, Enum) mixins are deliberate; their str() must stay the member name.
+ignore = ["E501", "UP042"]
+
+[tool.ruff.lint.per-file-ignores]
+# imports follow pytest.importorskip("cpex") on purpose
+"tests/test_contextforge_adapter.py" = ["E402"]

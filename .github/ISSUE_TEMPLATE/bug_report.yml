@@ -1,0 +1,67 @@
+name: Bug report
+description: The runtime, the proxy or the plugin did something the policy did not say.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks. Please use **fabricated data only** in everything below. If the
+        problem is that data was released which should have been withheld,
+        that is a security issue: report it privately via the Security tab instead.
+  - type: input
+    id: version
+    attributes:
+      label: moriti version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version and OS
+      placeholder: "3.12.8, macOS 15"
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - Policy engine
+        - MCP proxy
+        - ContextForge plugin
+        - A policy pack
+        - Docs or examples
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The policy pack (or the relevant rules), the request context and the record. Fabricated values only.
+      render: yaml
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or audit event
+      description: Paste the proxy's stderr or the audit event if you have it. It should contain no protected values; if it does, that is itself a bug.
+      render: text
+  - type: checkboxes
+    id: nodata
+    attributes:
+      label: Data
+      options:
+        - label: This report contains no real personal data.
+          required: true

@@ -1,0 +1,92 @@
+name: popia_hr
+version: "1"
+description: >
+  POPIA-oriented policy for HR employee data accessed by AI agents.
+  Demonstrates that identical fields resolve differently depending on the
+  agent, the human principal's role and the assigned purpose.
+
+# Nothing is released unless a rule grants it AND every guard passes.
+default_decision: deny
+require_legal_basis: true
+
+purposes:
+  employee_directory_lookup:
+    description: Finding a colleague's contact details.
+    necessary_fields: [name, email, department, job_title]
+
+  monthly_payroll_processing:
+    description: Running the monthly payroll.
+    necessary_fields: [name, employee_id, bank_account, salary, tax_number]
+
+  expense_reimbursement:
+    description: Reimbursing an approved employee expense claim.
+    necessary_fields: [name, employee_id, bank_account]
+
+fields:
+  name:
+    sensitivity: normal
+  email:
+    sensitivity: normal
+  department:
+    sensitivity: normal
+  job_title:
+    sensitivity: normal
+  employee_id:
+    sensitivity: normal
+  salary:
+    sensitivity: high
+    never_external: true        # remuneration never leaves the organisation
+    no_persistence: true
+  bank_account:
+    sensitivity: high
+    tokenise_when_external: true
+    no_persistence: true
+  tax_number:
+    sensitivity: high
+    never_external: true
+    no_persistence: true
+  national_id:
+    sensitivity: high
+    never_external: true
+    no_persistence: true
+
+rules:
+  # --- directory lookups: contact details only -------------------------------
+  - id: directory-contact-fields
+    match:
+      purpose: employee_directory_lookup
+    field: [name, email, department, job_title]
+    decision: allow
+    reason: contact details are necessary for a directory lookup
+
+  # --- payroll: the same salary field, a different answer ---------------------
+  - id: payroll-agent-remuneration
+    match:
+      agent: payroll_agent
+      principal_role: hr_payroll_admin
+      purpose: monthly_payroll_processing
+      destination: internal_system
+    field: [salary, bank_account, tax_number, name, employee_id]
+    decision: allow
+    reason: >-
+      payroll administration requires remuneration data, and the destination is
+      the internal payroll system
+
+  # --- expenses: enough to pay a person, no more -----------------------------
+  - id: finance-agent-expense-identity
+    match:
+      agent: finance_agent
+      purpose: expense_reimbursement
+    field: [name, employee_id]
+    decision: allow
+    reason: identity is necessary to attribute the reimbursement
+
+  - id: finance-agent-expense-bank-account
+    match:
+      agent: finance_agent
+      purpose: expense_reimbursement
+    field: bank_account
+    decision: tokenise
+    reason: >-
+      the agent needs a stable reference to the account to raise the payment,
+      but has no need to see the account number itself

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "moriti-hr-directory": {
+      "command": "python3",
+      "args": ["-m", "moriti.mcp.proxy", "deployments/hr_assistant.yaml"]
+    }
+  }
+}

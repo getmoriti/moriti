@@ -1,0 +1,23 @@
+# moriti external plugin server -- payroll agent deployment.
+#
+# Same policy pack, same tools, different bound purpose -- so salary and bank
+# account come through where the HR assistant's do not.
+plugins:
+  - name: "moriti-payroll-agent"
+    kind: "moriti.adapters.contextforge.plugin.MoritiPrivacyPlugin"
+    description: "Purpose-bound privacy mediation of tool results (monthly payroll processing)"
+    version: "0.1.0"
+    author: "moriti"
+    hooks: ["tool_post_invoke"]
+    tags: ["privacy", "purpose-limitation", "popia"]
+    mode: "transform"
+    priority: 20
+    config:
+      agent: payroll_agent
+      purpose: monthly_payroll_processing
+      policy: popia_hr_v1
+      principal_role: hr_payroll_admin
+      destination: internal_system
+      retention: ephemeral
+      jurisdiction: ZA
+      legal_basis: contract

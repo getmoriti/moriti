@@ -1,0 +1,21 @@
+# moriti proxy deployment: the HR assistant agent, fronting an HTTP MCP server.
+#
+# Same agent, purpose and policy as hr_assistant.yaml; the only difference is
+# the downstream: a server that speaks MCP over streamable HTTP (what hosted
+# servers and cloud gateways expose) instead of a stdio command.
+#
+#   python -m moriti.mcp.demo_hr_server --http 127.0.0.1:8766        # terminal 1
+#   moriti-proxy deployments/hr_assistant_http.yaml --http 127.0.0.1:8765   # terminal 2
+#   agents connect to http://127.0.0.1:8765/mcp
+agent: hr_assistant
+purpose: employee_directory_lookup
+policy: popia_hr_v1
+principal_role: employee
+destination: internal_model
+retention: ephemeral
+jurisdiction: ZA
+legal_basis: legitimate_interest
+allowed_tools: [get_employee, list_employees]
+downstream:
+  url: http://127.0.0.1:8766/mcp
+  # headers: {Authorization: "Bearer ..."}   # for a real server

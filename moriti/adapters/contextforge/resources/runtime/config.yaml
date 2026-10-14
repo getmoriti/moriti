@@ -1,0 +1,16 @@
+# Runtime config for the cpex external plugin server (CHUK_MCP_CONFIG_PATH).
+host:
+  name: "moriti"
+  log_level: "INFO"
+
+server:
+  type: "streamable-http"   # "stdio" | "sse" | "streamable-http"
+
+logging:
+  level: "WARNING"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  reset_handlers: true
+  quiet_libraries: true
+  loggers:
+    "moriti": "INFO"
+    "moriti.contextforge": "INFO"

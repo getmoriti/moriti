@@ -1,0 +1,23 @@
+# Paste into the ContextForge GATEWAY's plugins/config.yaml (`plugins:` list).
+#
+# Registers the running moriti plugin server as an external plugin. The
+# gateway forwards every tool_post_invoke to it and rebuilds the agent's
+# response from the rewritten result it returns.
+#
+# Scope it with `conditions` so one deployment (one bound purpose) governs one
+# set of servers / tools / tenants. Run a second plugin server on another port
+# for a second deployment.
+- name: "moriti"
+  kind: "external"
+  description: "moriti privacy control plane -- purpose-bound per-field mediation of tool results"
+  version: "0.1.0"
+  hooks: ["tool_post_invoke"]
+  mode: "transform"          # rewrites the payload; observe-only modes discard modified_payload
+  priority: 20
+  mcp:
+    proto: STREAMABLEHTTP
+    url: http://127.0.0.1:8000/mcp
+  conditions:
+    - server_ids: []         # empty = every server; list gateway server ids to scope
+      tools: []              # e.g. ["get_employee"]
+      tenant_ids: []

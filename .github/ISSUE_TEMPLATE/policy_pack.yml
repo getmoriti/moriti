@@ -1,0 +1,27 @@
+name: Policy pack
+description: Propose a pack for a law, a sector or a jurisdiction.
+labels: [policy-pack]
+body:
+  - type: input
+    id: law
+    attributes:
+      label: Law or framework
+      placeholder: "NDPA (Nigeria), GDPR Art. 5-6, Kenya DPA 2019"
+    validations:
+      required: true
+  - type: textarea
+    id: purposes
+    attributes:
+      label: Purposes and the fields each one genuinely needs
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
+    id: bases
+    attributes:
+      label: Lawful bases, consent rules, transfer and retention limits the pack must express
+  - type: textarea
+    id: refs
+    attributes:
+      label: References
+      description: Sections, guidance notes or regulator decisions the rules are drawn from.

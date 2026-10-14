@@ -1,0 +1,16 @@
+# moriti proxy deployment: the payroll agent.
+#
+# Same downstream server, same policy pack, different bound purpose --
+# so salary and bank account come through where the HR assistant's do not.
+agent: payroll_agent
+purpose: monthly_payroll_processing
+policy: popia_hr_v1
+principal_role: hr_payroll_admin
+destination: internal_system
+retention: ephemeral
+jurisdiction: ZA
+legal_basis: contract
+allowed_tools: [get_employee]
+downstream:
+  command: "{python}"      # the proxy's own interpreter; a real server uses a real command
+  args: [-m, moriti.mcp.demo_hr_server]
