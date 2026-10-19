@@ -16,7 +16,7 @@ Please do not open a public issue for a security problem.
 
 Use **Report a vulnerability** under this repository's *Security* tab (GitHub's
 private vulnerability reporting). If that is unavailable to you, email
-hello@unseenai.co with "security" in the subject; you will get a private reply.
+hello@moriti.dev with "security" in the subject; you will get a private reply.
 
 Include what you can of:
 
