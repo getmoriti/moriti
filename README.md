@@ -55,6 +55,13 @@ A marketing employee with legitimate CRM access requests a customer's mobile num
 Python 3.11 or newer. The MCP proxy uses the MCP Python SDK 2.x; the ContextForge plugin needs Python 3.12.
 
 ```bash
+pip install moriti
+```
+
+The [quickstart](https://www.moriti.dev/docs/quickstart) takes it from there. The examples below live in the repository, so they run from a clone:
+
+```bash
+git clone https://github.com/getmoriti/moriti && cd moriti
 pip install -e ".[dev]"
 python -m examples.demo_policy_engine
 ```

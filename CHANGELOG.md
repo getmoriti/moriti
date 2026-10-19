@@ -4,10 +4,10 @@ All notable changes to moriti are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-10-19
 
 The first release: the runtime as an open-source research and engineering
-project, deliberately small. The date is set on release day.
+project, deliberately small.
 
 ### Added
 

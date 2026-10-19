@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "moriti"
-version = "0.1.0rc1"
+version = "0.1.0"
 description = "Open-source runtime privacy layer for AI agents: purpose-aware decisions over what sensitive data an agent may receive, retain or transmit."
 readme = "README.md"
 license = { text = "Apache-2.0" }
