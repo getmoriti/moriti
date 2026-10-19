@@ -1,12 +1,12 @@
 ---
 title: Quickstart
-description: Install moriti, make one decision, then put it in the path of an agent.
+description: Install moriti, make one decision, then put it between an agent and its tools.
 order: 1
 ---
 
 # Quickstart
 
-moriti decides, field by field, what an agent may receive for its assigned purpose. This page shows how to enforce that decision before a tool result reaches the agent.
+moriti decides, field by field, what an agent may receive for its assigned purpose. This page shows how to enforce it before a tool result reaches the agent.
 
 ## Install
 
@@ -16,7 +16,7 @@ Python 3.11 or newer.
 pip install moriti
 ```
 
-The core has two dependencies. Each integration is an extra: `moriti[mcp]` for the proxy, `moriti[serve]` for the HTTP service, and others listed under [Integrations](/docs/integrations).
+The core has two dependencies. Integrations are optional extras: `moriti[mcp]` for the proxy, `moriti[serve]` for the HTTP service, and others under [Integrations](/docs/integrations).
 
 ## Make a decision
 
@@ -38,20 +38,20 @@ result = plane.mediate(
 
 print(result.data)      # {'name': 'Sarah Ndlovu', 'email': 'sarah@example.co.za'}
 print(result.withheld)  # ['salary']
-print(result.explain()) # the reason and the guard for every field
+print(result.explain()) # why each field was allowed or withheld
 ```
 
-`popia_hr_v1` is a policy pack that ships with the package. A directory lookup needs contact details, so salary never leaves `mediate()`. The decision involves no model: the same data, context and policy always produce the same result.
+`popia_hr_v1` is a policy pack that ships with the package, written for South Africa's POPIA. A directory lookup needs contact details, so salary is left out. No LLM is involved: the same data, context and policy always give the same result.
 
-## Put it in the path of an agent
+## Put it between the agent and its tools
 
-An engine the agent has to volunteer to call is not enforcement. The MCP proxy sits between the agent and the downstream tool server, so every result is mediated before the agent sees it. Mediation covers what passes through the proxy, so the agent must have no other route to the same data.
+An engine the agent has to volunteer to call is not enforcement. The MCP proxy sits between the agent and the tool server, so every result is mediated before the agent sees it. moriti can only protect what passes through it, so give the agent no other route to the same data.
 
 ```bash
 pip install "moriti[mcp]"
 ```
 
-Describe the deployment. The package includes a small HR MCP server, so you can run this without building a tool server of your own. The purpose comes from this file, which whoever provisions the agent controls. The agent cannot declare or change it.
+Describe the deployment: one agent, one purpose, one policy. Whoever provisions the agent sets the purpose here. The agent cannot declare or change it.
 
 ```yaml
 # hr_assistant.yaml
@@ -65,7 +65,9 @@ downstream:
   args: [-m, moriti.mcp.demo_hr_server]
 ```
 
-Point the agent at the proxy. This is the configuration for Claude Code (`.mcp.json`); other MCP clients take the same command and arguments in their own format. `moriti-proxy` has to be on the `PATH` of the process that launches it, so if you installed into a virtual environment, use the full path to it.
+`downstream` is the tool server being protected. This one is a small HR server that ships with the package, so there is nothing to build.
+
+Point the agent at the proxy. For Claude Code, save this as `.mcp.json` in your project; other MCP clients take the same command and arguments in their own format. If moriti is in a virtual environment, use the full path to `moriti-proxy` as the command.
 
 ```json
 {
@@ -78,7 +80,7 @@ Point the agent at the proxy. This is the configuration for Claude Code (`.mcp.j
 }
 ```
 
-Ask the agent: *Look up Sarah Ndlovu in the employee directory.* The downstream server returns the whole record; the agent receives:
+Ask the agent: *Look up Sarah Ndlovu in the employee directory.* The downstream server returns the whole record. The agent receives:
 
 ```json
 {
@@ -89,9 +91,9 @@ Ask the agent: *Look up Sarah Ndlovu in the employee directory.* The downstream 
 }
 ```
 
-Employee ID, salary, bank account and tax number are withheld from the tool response before it reaches the agent. A directory lookup needs to reach someone. It has no use for what they earn.
+Employee ID, salary, bank account and tax number are withheld before the response reaches the agent. A directory lookup needs a name and a way to contact someone. Pay and bank details have no place in it.
 
-To use your own tool server, replace `downstream` with its command, or with `url:` for a server that speaks streamable HTTP.
+To protect your own tool server, replace `downstream` with its command, or with `url:` for a server over HTTP.
 
 ## Next
 
