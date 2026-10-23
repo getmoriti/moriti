@@ -8,16 +8,18 @@ order: 5
 
 One engine and one deployment file sit behind every integration. Choose where mediation should run.
 
-| Where | Install | How it runs |
-| --- | --- | --- |
-| Any MCP client | `moriti[mcp]` | MCP proxy |
-| IBM ContextForge | `moriti[contextforge]` | External plugin |
-| Google ADK | `moriti[adk]` | Plugin |
-| Strands Agents | `moriti[strands]` | Hooks |
-| Microsoft Agent Framework | `moriti[agentframework]` | Function middleware |
-| Amazon Bedrock AgentCore | none | Gateway response interceptor |
-| Azure API Management, Kong, other HTTP-only gateways | `moriti[serve]` | HTTP service |
-| Your own code | none | `PrivacyPlane.mediate()` |
+| Where | Install | How it runs | Tested against |
+| --- | --- | --- | --- |
+| Any MCP client | `moriti[mcp]` | MCP proxy | A real MCP client, over stdio and HTTP |
+| IBM ContextForge | `moriti[contextforge]` | External plugin | ContextForge's plugin framework (cpex), not yet a running gateway |
+| Google ADK | `moriti[adk]` | Plugin | ADK's own tool classes, not yet a running agent |
+| Strands Agents | `moriti[strands]` | Hooks | Strands' own hook registry, not yet a running agent |
+| Microsoft Agent Framework | `moriti[agentframework]` | Function middleware | A real tool through the framework's middleware, not yet a running agent |
+| Amazon Bedrock AgentCore | none | Gateway response interceptor | The documented event contract, not yet a live gateway |
+| Azure API Management, Kong, other HTTP-only gateways | `moriti[serve]` | HTTP service | The service's HTTP API, not yet behind a real gateway |
+| Your own code | none | `PrivacyPlane.mediate()` | The engine's own test suite |
+
+All of this runs in CI on every change. None of it has run in a production deployment yet.
 
 ## MCP proxy
 

@@ -20,6 +20,8 @@ The core has two dependencies. Integrations are optional extras: `moriti[mcp]` f
 
 ## Make a decision
 
+Save this as `quickstart.py`:
+
 ```python
 from moriti import PrivacyPlane, RequestContext, Destination, LegalBasis
 
@@ -36,12 +38,25 @@ result = plane.mediate(
     ),
 )
 
-print(result.data)      # {'name': 'Sarah Ndlovu', 'email': 'sarah@example.co.za'}
-print(result.withheld)  # ['salary']
-print(result.explain()) # why each field was allowed or withheld
+print(result.data)
+print(result.withheld)
+print(result.explain())
 ```
 
-`popia_hr_v1` is a policy pack that ships with the package, written for South Africa's POPIA. A directory lookup needs contact details, so salary is left out. No LLM is involved: the same data, context and policy always give the same result.
+Run it with `python quickstart.py`. You should see:
+
+```text
+{'name': 'Sarah Ndlovu', 'email': 'sarah@example.co.za'}
+['salary']
+  name: ALLOW
+      contact details are necessary for a directory lookup
+  email: ALLOW
+      contact details are necessary for a directory lookup
+  salary: DENY  (restricted by purpose_necessity)
+      'salary' is not necessary for the assigned purpose 'employee_directory_lookup'
+```
+
+`popia_hr_v1` is a policy pack that ships with the package, written for South Africa's POPIA. A directory lookup needs contact details, so salary is left out. No LLM is involved: the same data, context and policy always give the same result. This call is the engine on its own, and whoever writes the code chooses to run it. The next section puts it where the agent cannot skip it.
 
 ## Put it between the agent and its tools
 
